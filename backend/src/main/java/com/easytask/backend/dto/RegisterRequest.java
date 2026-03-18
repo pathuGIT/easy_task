@@ -1,6 +1,6 @@
 package com.easytask.backend.dto;
 
-public class LoadUser {
+public class RegisterRequest {
     private String username;
     private String password;
 
@@ -20,10 +20,10 @@ public class LoadUser {
         this.password = password;
     }
 
-    public LoadUser() {
+    public RegisterRequest() {
     }
 
-    public LoadUser(String username, String password) {
+    public RegisterRequest(String username, String password) {
         this.username = username;
         this.password = password;
     }

@@ -1,18 +1,31 @@
 package com.easytask.backend.models;
 
 import jakarta.persistence.*;
-import lombok.*;
+
+import java.util.List;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
     @Column(unique = true)
     private String username;
     private String password;
+
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks;
+
+    public Users() {
+    }
+
+    public Users(Long id, String username, String password, List<Task> tasks) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.tasks = tasks;
+    }
 
     public Long getId() {
         return id;
@@ -36,5 +49,13 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> cartItems) {
+        this.tasks = cartItems;
     }
 }

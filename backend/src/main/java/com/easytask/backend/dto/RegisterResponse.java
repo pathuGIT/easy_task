@@ -1,10 +1,5 @@
 package com.easytask.backend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
-@AllArgsConstructor
-@NoArgsConstructor
 public class RegisterResponse {
     private Long id;
     private String username;
@@ -22,6 +17,11 @@ public class RegisterResponse {
     }
 
     public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public RegisterResponse(Long id, String username) {
+        this.id = id;
         this.username = username;
     }
 }
