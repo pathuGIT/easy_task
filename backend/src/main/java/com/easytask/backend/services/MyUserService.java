@@ -19,15 +19,11 @@ public class MyUserService implements UserDetailsService {
     // Get the user from the db
     @Override
     public UserDetails loadUserByUsername(String username){
-        System.out.println("Helloooooooooooo: "+ username);
 
         if(userRepository.findByUsername(username) == null){
             System.out.println("USER NOT FOUND!");
             throw new UsernameNotFoundException("User not found with : " + username);
         }
-        System.out.println("Okayyy: "+ username);
-
-        System.out.println("uuu: "+userRepository.findByUsername(username).getUsername()); // ✅ SAFE NOW
 
         return User.builder()
                 .username(userRepository.findByUsername(username).getUsername())

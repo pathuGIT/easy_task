@@ -1,6 +1,5 @@
 package com.easytask.backend.services;
 
-import com.easytask.backend.dto.LoadUser;
 import com.easytask.backend.dto.LoginRequest;
 import com.easytask.backend.dto.LoginResponse;
 import com.easytask.backend.dto.RegisterResponse;
@@ -14,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.User;
+
+import java.util.Map;
 
 @Service
 public class UserService {
@@ -46,22 +48,18 @@ public class UserService {
     }
 
     public LoginResponse login(LoginRequest loginRequest) {
-        System.out.println("T2");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
-        System.out.println("T...");
         if (!authentication.isAuthenticated()) {
             throw new RuntimeException("Invalid credentials");
         }
 
-        System.out.println("T3");
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
         String activeToken = jwtService.generateActiveToken(userDetails.getUsername());
         String refreshToken = jwtService.generateRefreshToken(userDetails.getUsername());
 
-        System.out.println("T4");
         if (refreshToken != null) {
             Users users = userRepository.findByUsername(userDetails.getUsername());
 
@@ -79,5 +77,20 @@ public class UserService {
         }
 
         return new LoginResponse(activeToken, refreshToken);
+    }
+
+    public Map<String, String> refresh(String refreshToken) {
+        try {
+            String username = jwtService.extractUserName(refreshToken);
+
+            UserDetails userDetails = User.withUsername(username).password("").roles("").build();
+            if (jwtService.validateToken(refreshToken, userDetails)) {
+                String newActiveToken = jwtService.generateActiveToken(username);
+                return Map.of("activeToken", newActiveToken);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        throw new RuntimeException("Error generate refresh token.");
     }
 }

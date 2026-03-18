@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Controller
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -42,5 +44,15 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<ApiResponse<Map<String, String>>> refresh(@RequestBody Map<String, String> request){
+        try {
+            String refreshToken = request.get("refreshToken");
+            Map<String, String> active_token = userService.refresh(refreshToken);
+            return ResponseEntity.ok(new ApiResponse<>("Login Success.", active_token));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
+        }
+    }
 
 }
