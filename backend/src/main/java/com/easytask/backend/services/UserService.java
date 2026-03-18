@@ -93,4 +93,14 @@ public class UserService {
         }
         throw new RuntimeException("Error generate refresh token.");
     }
+
+    public Map<String, String> logout(String username) {
+        Users user = userRepository.findByUsername(username);
+        if (user != null) {
+            user.setRefresh_token(null);
+            userRepository.save(user);
+            return Map.of("msg", "User " + username + " successfully logout.");
+        }
+        throw new RuntimeException("Error Logout.");
+    }
 }
