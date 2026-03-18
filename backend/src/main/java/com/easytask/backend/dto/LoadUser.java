@@ -1,8 +1,26 @@
 package com.easytask.backend.dto;
 
 public class LoadUser {
+    private Long id;
     private String username;
     private String password;
+
+    public LoadUser() {
+    }
+
+    public LoadUser(Long id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -17,14 +35,6 @@ public class LoadUser {
     }
 
     public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public LoadUser() {
-    }
-
-    public LoadUser(String username, String password) {
-        this.username = username;
         this.password = password;
     }
 }

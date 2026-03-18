@@ -25,10 +25,10 @@ public class SecureConfig {
     private JwtFilter jwtFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(csrf -> csrf.disable()) //disable default csrf security
-                .cors(cors -> cors.configurationSource(configurationSource())) //call configurationSource method
+                .csrf(csrf -> csrf.disable()) // disable default csrf security
+                .cors(cors -> cors.configurationSource(configurationSource())) // call configurationSource method
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/refresh").permitAll()
                         .anyRequest().authenticated())
@@ -37,7 +37,7 @@ public class SecureConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
 
@@ -47,10 +47,10 @@ public class SecureConfig {
     }
 
     @Bean
-    protected CorsConfigurationSource configurationSource(){ // global CORS configuration
+    protected CorsConfigurationSource configurationSource() { // global CORS configuration
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200")); // allow access to frontend
-        configuration.setAllowedMethods(List.of("POST", "GET", "DELETE", "PUT", "OPTIONS")); //allow this ACTION
+        configuration.setAllowedMethods(List.of("POST", "GET", "DELETE", "PUT", "OPTIONS")); // allow this ACTION
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
