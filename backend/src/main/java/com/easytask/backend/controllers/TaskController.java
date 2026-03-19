@@ -4,6 +4,7 @@ import com.easytask.backend.dto.ApiResponse;
 import com.easytask.backend.models.Task;
 import com.easytask.backend.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,8 @@ public class TaskController {
         try {
             List<Task> list = taskService.getAll();
             return ResponseEntity.ok(new ApiResponse<>("Get all tasks success.", list));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
         }
     }
 
@@ -33,8 +34,8 @@ public class TaskController {
         try {
             Task task = taskService.getTaskById(id);
             return ResponseEntity.ok(new ApiResponse<>("Get task success.", task));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
         }
     }
 
@@ -44,8 +45,10 @@ public class TaskController {
         try {
             Task createdTask = taskService.createTask(task);
             return ResponseEntity.ok(new ApiResponse<>("Create task success.", createdTask));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
+        } catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(e.getMessage(),null));
         }
     }
 
@@ -55,8 +58,8 @@ public class TaskController {
         try {
             Task updatedTask = taskService.updateTask(id, task);
             return ResponseEntity.ok(new ApiResponse<>("Update task success.", updatedTask));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
         }
     }
 
@@ -66,8 +69,8 @@ public class TaskController {
         try {
             taskService.deleteTask(id);
             return ResponseEntity.ok(new ApiResponse<>("Delete task success.", "Deleted task id: " + id));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
         }
     }
 }
