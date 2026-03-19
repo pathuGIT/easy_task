@@ -53,6 +53,10 @@ public class TaskService {
             throw new UsernameNotFoundException("This user not found: " + authentication.getName());
         }
 
+        if(task.getTitle().isBlank()){
+            throw new RuntimeException("Task Title must Required!!");
+        }
+
         task.setUsers(user);
         task.setCreatedAt(java.time.LocalDateTime.now());
         if (task.getStatus() == null || task.getStatus().isEmpty()) {
