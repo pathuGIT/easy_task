@@ -107,4 +107,14 @@ public class UserService {
         return Map.of("msg", "User " + authentication.getName() + " successfully logout.");
 
     }
+
+    public Users getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("User not authenticated");
+        }
+        Users user = userRepository.findByUsername(authentication.getName());
+
+        return user;
+    }
 }
