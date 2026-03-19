@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -94,14 +95,16 @@ public class UserService {
         throw new RuntimeException("Error generate refresh token.");
     }
 
-    public Map<String, String> logout(String username) {
-        Users user = userRepository.findByUsername(username);
-        System.out.println("mmmmmmmmmmmm: "+ user.getUsername());
-        if (user != null) {
-            user.setRefresh_token(null);
-            userRepository.save(user);
-            return Map.of("msg", "User " + username + " successfully logout.");
+    public Map<String, String> logout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("User not authenticated");
         }
-        throw new RuntimeException("Error Logout.");
+        Users user = userRepository.findByUsername(authentication.getName());
+
+        user.setRefresh_token(null);
+        userRepository.save(user);
+        return Map.of("msg", "User " + authentication.getName() + " successfully logout.");
+
     }
 }

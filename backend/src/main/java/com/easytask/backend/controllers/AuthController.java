@@ -64,9 +64,9 @@ public class AuthController {
     @PutMapping("/logout")
     public ResponseEntity<?> logout() {
         try {
-            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+            //String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
-            Map<String, String> res = userService.logout(username);
+            Map<String, String> res = userService.logout();
             return ResponseEntity.ok(new ApiResponse<>("Logout successful", res));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(e.getMessage(),null));
