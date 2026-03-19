@@ -51,6 +51,7 @@ public class SecureConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200")); // allow access to frontend
         configuration.setAllowedMethods(List.of("POST", "GET", "DELETE", "PUT", "OPTIONS")); // allow this ACTION
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
