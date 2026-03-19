@@ -2,17 +2,15 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environement/environemnt';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { AuthResponse } from '../interfaces/authResponse';
+import { ProfileResponse } from '../interfaces/profileResponse';
 
-interface AuthResponse {
-  accessToken: string;
-  refreshToken: string;
-}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
- private apiUrl = environment.api;
+  private apiUrl = environment.api;
   private accessTokenKey = 'access_token';
   private refreshTokenKey = 'refresh_token';
 
@@ -26,7 +24,7 @@ export class AuthService {
       .post<AuthResponse>(`${this.apiUrl}/auth/login`, { username, password })
       .pipe(
         tap(res => {
-          this.storeTokens(res.accessToken, res.refreshToken);
+          this.storeTokens(res.data.active_token, res.data.refresh_token);
           this.isLoggedInSubject.next(true);
         })
       );
@@ -38,9 +36,18 @@ export class AuthService {
       .post<AuthResponse>(`${this.apiUrl}/auth/refresh`, { refreshToken })
       .pipe(
         tap(res => {
-          this.storeTokens(res.accessToken, res.refreshToken);
+          this.storeTokens(res.data.active_token, res.data.refresh_token);
         })
       );
+  }
+
+  isLoggedIn(): boolean {
+    return this.getAccessToken() !== null;
+  }
+  
+  profile(): Observable<ProfileResponse>{
+    return this.http
+      .get<ProfileResponse>(`${this.apiUrl}/user/`);
   }
 
   logout(): void {
