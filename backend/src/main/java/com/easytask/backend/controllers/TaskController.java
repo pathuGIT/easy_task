@@ -29,6 +29,15 @@ public class TaskController {
 
 //    Get a task by ID
 //    Create a new task
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse<Task>> createTask(@RequestBody Task task) {
+        try {
+            Task createdTask = taskService.createTask(task);
+            return ResponseEntity.ok(new ApiResponse<>("Create task success.", createdTask));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 //    Update an existing task
 //    Delete a task
 }

@@ -22,23 +22,42 @@ public class TaskService {
 
     public List<Task> getAll() {
         try {
-            System.out.println("mn: "+SecurityContextHolder.getContext().getAuthentication());
+            System.out.println("mn: " + SecurityContextHolder.getContext().getAuthentication());
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated()) {
                 throw new IllegalArgumentException("User not authenticated");
             }
 
             Users user = userRepository.findByUsername(authentication.getName());
-            if (user == null){
+            if (user == null) {
                 throw new UsernameNotFoundException("This user not found: ");
             }
             List<Task> all = taskRepository.findAllByUsers(user);
-            if (all == null){
-                throw new UsernameNotFoundException("Empty list for this user: "+ user.getUsername());
+            if (all == null) {
+                throw new UsernameNotFoundException("Empty list for this user: " + user.getUsername());
             }
             return all;
         } catch (UsernameNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Task createTask(Task task) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("User not authenticated");
+        }
+
+        Users user = userRepository.findByUsername(authentication.getName());
+        if (user == null) {
+            throw new UsernameNotFoundException("This user not found: " + authentication.getName());
+        }
+
+        task.setUsers(user);
+        task.setCreatedAt(java.time.LocalDateTime.now());
+        if (task.getStatus() == null || task.getStatus().isEmpty()) {
+            task.setStatus("TO_DO");
+        }
+        return taskRepository.save(task);
     }
 }
