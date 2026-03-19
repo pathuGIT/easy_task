@@ -1,4 +1,14 @@
-<div class="flex list-none justify-evenly border">
-    <li><a routerLink="/">Home</a></li>
-    <li><a routerLink="/login">Login</a></li>
-</div>
+<nav class="flex justify-between items-center p-5 border">
+    <span class="font-bold">Easy Task</span>
+
+    <ul class="flex gap-4 list-none">
+        @if(!isLoggin){
+            <li><a routerLink="/">Home</a></li>
+            <li><a routerLink="/login">Login</a></li>
+        }
+        @if(isLoggin){
+            <li><a routerLink="/dashboard">Dashboard</a></li>
+            <li><a (click)="logout()" class="cursor-pointer">Logout</a></li>
+        }
+    </ul>
+</nav>
