@@ -1,0 +1,28 @@
+<div class="flex h-[90vh] justify-center items-center flex-col">
+    <p class="text-red-400 p-5">{{ warning }}</p>
+    <div class="space-y-4">
+        <h2 class="text-xl font-bold">Create New Task</h2>
+
+        <div>
+            <p>Title:</p>
+            <input type="text" class="border w-64 px-2 py-1" [(ngModel)]="title" name="title">
+        </div>
+
+        <div>
+            <p>Description:</p>
+            <textarea class="border w-64 px-2 py-1 h-20" [(ngModel)]="description" name="description"></textarea>
+        </div>
+
+        <div>
+            <p>Status:</p>
+            <select class="border w-64 px-2 py-1" [(ngModel)]="status" name="status">
+                <option value="TO_DO">TO DO</option>
+                <option value="IN_PROGRESS">IN PROGRESS</option>
+                <option value="DONE">DONE</option>
+            </select>
+        </div>
+
+        <button class="border px-4 py-1 cursor-pointer bg-blue-500 text-white rounded mt-2"
+            (click)="createTask()">Create Task</button>
+    </div>
+</div>
