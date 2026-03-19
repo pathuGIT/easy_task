@@ -19,24 +19,29 @@ import java.io.IOException;
 import java.util.List;
 
 @Configuration
-@AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
+    @Autowired
     private JwtService jwtService;
+    @Autowired
     private MyUserService myUserService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authentication"); // Get header request
+        String authHeader = request.getHeader("Authorization"); // Get header request
 
         if(authHeader != null && authHeader.startsWith("Bearer ")){ // Ensure request not null & header start with 'Bearer'
             String token = authHeader.substring(7); // Split the token from the request (without 'Bearer')
 
             if (!token.equals("null") && !token.equals("undefined") && !token.isBlank()) { // Verify is there valid token?
+
                 try {
                     String username = jwtService.extractUserName(token); // Extract the username from token
 
+
                     if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+
                         UserDetails userDetails = myUserService.loadUserByUsername(username);
                         if (jwtService.validateToken(token, userDetails)) {  // Validate the token & username
 
@@ -51,7 +56,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 }
             }
         }
-
         filterChain.doFilter(request, response);
     }
 }

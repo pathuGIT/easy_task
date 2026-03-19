@@ -96,6 +96,7 @@ public class UserService {
 
     public Map<String, String> logout(String username) {
         Users user = userRepository.findByUsername(username);
+        System.out.println("mmmmmmmmmmmm: "+ user.getUsername());
         if (user != null) {
             user.setRefresh_token(null);
             userRepository.save(user);

@@ -38,7 +38,7 @@ public class JwtService {
             return Jwts.builder()
                     .subject(username)
                     .issuedAt(new Date(System.currentTimeMillis()))
-                    .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 2))
+                    .expiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 2))
                     .signWith(secretKey, SignatureAlgorithm.HS256)
                     .compact();
         } catch (InvalidKeyException e) {

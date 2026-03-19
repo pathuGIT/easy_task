@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -59,20 +60,16 @@ public class AuthController {
         }
     }
 
+    // user logout
     @PutMapping("/logout")
-    public ResponseEntity<?> logout(Authentication authentication) {
-        // authentication will be filled by Spring Security from your JWT
-        String username = authentication.getName(); // usually the email/contact (subject)
-        String role = authentication.getAuthorities().iterator().next().getAuthority();
-
-        System.out.println("Logout user: " + username );
-
+    public ResponseEntity<?> logout() {
         try {
+            String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
             Map<String, String> res = userService.logout(username);
             return ResponseEntity.ok(new ApiResponse<>("Logout successful", res));
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse<>("Error Logout", ex.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(e.getMessage(),null));
         }
     }
 
