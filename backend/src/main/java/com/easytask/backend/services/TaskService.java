@@ -60,4 +60,22 @@ public class TaskService {
         }
         return taskRepository.save(task);
     }
+
+    public Task getTaskById(Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("User not authenticated");
+        }
+
+        Users user = userRepository.findByUsername(authentication.getName());
+        if (user == null) {
+            throw new UsernameNotFoundException("This user not found: " + authentication.getName());
+        }
+
+        Task task = taskRepository.findByIdAndUsers(id, user);
+        if (task == null) {
+            throw new RuntimeException("Task not found with id: " + id);
+        }
+        return task;
+    }
 }

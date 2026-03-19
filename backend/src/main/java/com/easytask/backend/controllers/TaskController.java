@@ -18,7 +18,7 @@ public class TaskController {
 
     // Get all tasks
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<Task>>> allTask(){
+    public ResponseEntity<ApiResponse<List<Task>>> allTask() {
         try {
             List<Task> list = taskService.getAll();
             return ResponseEntity.ok(new ApiResponse<>("Get all tasks success.", list));
@@ -27,8 +27,18 @@ public class TaskController {
         }
     }
 
-//    Get a task by ID
-//    Create a new task
+    // Get a task by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<Task>> getTaskById(@PathVariable Long id) {
+        try {
+            Task task = taskService.getTaskById(id);
+            return ResponseEntity.ok(new ApiResponse<>("Get task success.", task));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Create a new task
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<Task>> createTask(@RequestBody Task task) {
         try {
@@ -38,6 +48,6 @@ public class TaskController {
             throw new RuntimeException(e);
         }
     }
-//    Update an existing task
-//    Delete a task
+    // Update an existing task
+    // Delete a task
 }
