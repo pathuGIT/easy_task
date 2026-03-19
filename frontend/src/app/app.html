@@ -1,7 +1,9 @@
 <div class="m-5">
   <app-header></app-header>
   <div class="flex border h-[85vh]">
+    @if(isLoggin){
     <app-sidebar class=" w-64 border"></app-sidebar>
+    }
     <main class="flex-1">
       <router-outlet></router-outlet>
     </main>

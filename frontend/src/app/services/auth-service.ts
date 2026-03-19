@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AuthResponse } from '../interfaces/authResponse';
 import { ProfileResponse } from '../interfaces/profileResponse';
+import { RegResponse } from '../interfaces/RegResponse';
 
 
 @Injectable({
@@ -18,6 +19,11 @@ export class AuthService {
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   constructor(private http: HttpClient) {}
+
+  register(username: string, password: string): Observable<RegResponse> {
+    return this.http
+      .post<RegResponse>(`${this.apiUrl}/auth/register`, { username, password });
+  }
 
   login(username: string, password: string): Observable<AuthResponse> {
     return this.http
