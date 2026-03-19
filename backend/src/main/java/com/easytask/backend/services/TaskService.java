@@ -78,4 +78,23 @@ public class TaskService {
         }
         return task;
     }
+
+    public Task updateTask(Long id, Task reqTask) {
+        Task existingTask = getTaskById(id);
+        if (reqTask.getTitle() != null) {
+            existingTask.setTitle(reqTask.getTitle());
+        }
+        if (reqTask.getDescription() != null) {
+            existingTask.setDescription(reqTask.getDescription());
+        }
+        if (reqTask.getStatus() != null) {
+            existingTask.setStatus(reqTask.getStatus());
+        }
+        return taskRepository.save(existingTask);
+    }
+
+    public void deleteTask(Long id) {
+        Task existingTask = getTaskById(id);
+        taskRepository.delete(existingTask);
+    }
 }

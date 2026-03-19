@@ -48,6 +48,26 @@ public class TaskController {
             throw new RuntimeException(e);
         }
     }
+
     // Update an existing task
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<Task>> updateTask(@PathVariable Long id, @RequestBody Task task) {
+        try {
+            Task updatedTask = taskService.updateTask(id, task);
+            return ResponseEntity.ok(new ApiResponse<>("Update task success.", updatedTask));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // Delete a task
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteTask(@PathVariable Long id) {
+        try {
+            taskService.deleteTask(id);
+            return ResponseEntity.ok(new ApiResponse<>("Delete task success.", "Deleted task id: " + id));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
