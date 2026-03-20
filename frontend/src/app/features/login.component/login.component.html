@@ -1,14 +1,22 @@
-<div class="flex h-[90vh] justify-center items-center">
+<div class="flex flex-col h-[90vh] justify-center items-center">
+
+    <div class="mb-5 text-center text-xs">
+        <p class="p-1 text-red-400" *ngFor="let line of warning">
+            {{ line }}
+        </p>
+    </div>
+
+
     <div class="space-y-4">
         <p class="underline">Login</p>
         <div>
             <p>Username:</p>
-            <input type="text" class="border" [(ngModel)]="username", name="username">
+            <input type="text" class="border" [(ngModel)]="username" , name="username">
         </div>
 
         <div>
             <p>Password:</p>
-            <input type="text" class="border" [(ngModel)]="password", name="password">
+            <input type="text" class="border" [(ngModel)]="password" , name="password">
         </div>
 
         <button class="border px-4 py-1 cursor-pointer" (click)="login()">Login</button>

@@ -27,6 +27,9 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisterResponse>> register(@RequestBody LoginRequest request) {
         try {
+            if(request.getPassword().isBlank() && request.getUsername().isBlank()){
+                throw  new IllegalArgumentException("Username & password must be required!!");
+            }
             RegisterResponse user = userService.register(request);
             return ResponseEntity.ok(
                     new ApiResponse<>("Registration Success.", user)

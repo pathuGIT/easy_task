@@ -1,4 +1,10 @@
-<div class="flex h-[90vh] justify-center items-center">
+<div class="flex flex-col h-[90vh] justify-center items-center">
+
+    <div class="mb-5 text-center text-xs">
+        <p class="p-1 text-red-400" *ngFor="let line of warning">
+            {{ line }}
+        </p>
+    </div>
     <div class="space-y-4">
         <p class="underline">Register</p>
         <div>
