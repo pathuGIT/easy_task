@@ -79,8 +79,21 @@ The application utilizes JWT (JSON Web Tokens) for securing endpoints and authen
 ---
 
 ## 📸 Screenshots
+Home Page
+<img width="1918" height="1021" alt="image" src="https://github.com/user-attachments/assets/bc3c4dc1-87d5-4ca6-b32a-06635c674cf0" />
+Login Page
+<img width="1918" height="1017" alt="image" src="https://github.com/user-attachments/assets/a5c0e32b-417d-41d9-a77f-171bf114de66" />
+Register Page
+<img width="1918" height="1021" alt="image" src="https://github.com/user-attachments/assets/9597c617-62a1-47de-b8b1-d7c40cda6226" />
+Dashboard Page
+<img width="1918" height="1017" alt="image" src="https://github.com/user-attachments/assets/60567564-922e-4a63-ba6f-3c7ee7d217b8" />
+View Task Page
+<img width="1918" height="1018" alt="image" src="https://github.com/user-attachments/assets/48a5b041-b02a-4ff3-be62-5ddc9d0c899b" />
+New Task Page
+<img width="1918" height="1022" alt="image" src="https://github.com/user-attachments/assets/3507a351-af30-4f39-92ee-0e690eb9ae68" />
+Update Task Page
+<img width="1918" height="1018" alt="image" src="https://github.com/user-attachments/assets/df75382b-3363-4ff6-bf4b-8d65b72a75fd" />
 
-*(Include screenshots of your application interfaces here to give a quick visual overview of the project)*
 
 <!-- Example:
 ![Login Screen](./assets/login-screenshot.png)
@@ -88,4 +101,4 @@ The application utilizes JWT (JSON Web Tokens) for securing endpoints and authen
 -->
 
 ---
-*Created for internship evaluation. Thank you for reviewing my work!*
+*Thank you for reviewing my work!*
