@@ -11,6 +11,8 @@ services:
       DB_HOST: ${DB_HOST}
       DB_USER: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      API_URL: ${API_URL}
       DB_NAME: easy_task
       DB_PORT: 3306
     networks:
