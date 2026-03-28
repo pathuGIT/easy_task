@@ -1,64 +1,59 @@
 name: CI/CD Pipeline
 
 on:
-push:
-branches:
-- beta
+  push:
+    branches:
+      - beta
 
 jobs:
-build-and-deploy:
-runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-```
-steps:
+      # 2. Login to Docker Hub
+      - name: Docker Hub Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-# 1. Checkout code
-- name: Checkout code
-  uses: actions/checkout@v3
+      # 3. Build & Push Backend Image
+      - name: Build and Push Backend
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-backend:latest ./backend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-backend:latest
 
-# 2. Login to Docker Hub
-- name: Docker Hub Login
-  uses: docker/login-action@v2
-  with:
-    username: ${{ secrets.DOCKERHUB_USERNAME }}
-    password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # 4. Build & Push Frontend Image
+      - name: Build and Push Frontend
+        run: |
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-frontend:latest ./frontend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-frontend:latest
 
-# 3. Build & Push Backend Image
-- name: Build and Push Backend
-  run: |
-    docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-backend:latest ./backend
-    docker push ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-backend:latest
+      # 5. SSH into EC2 and Deploy
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Go to project directory
+            cd ~/app
 
-# 4. Build & Push Frontend Image
-- name: Build and Push Frontend
-  run: |
-    docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-frontend:latest ./frontend
-    docker push ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-frontend:latest
+            # Pull latest images
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-backend:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-frontend:latest
 
-# 5. SSH into EC2 and Deploy
-- name: Deploy to EC2
-  uses: appleboy/ssh-action@v1.0.3
-  with:
-    host: ${{ secrets.EC2_HOST }}
-    username: ${{ secrets.EC2_USER }}
-    key: ${{ secrets.EC2_SSH_KEY }}
-    script: |
+            # Export env variables
+            export DB_HOST=${{ secrets.DB_HOST }}
+            export DB_USERNAME=${{ secrets.DB_USERNAME }}
+            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            export API_URL=${{ secrets.API_URL }}
 
-      # Go to project directory
-      cd ~/app
-
-      # Pull latest images
-      docker pull ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-backend:latest
-      docker pull ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-frontend:latest
-
-      # Export env variables
-      export DB_HOST=${{ secrets.DB_HOST }}
-      export DB_USERNAME=${{ secrets.DB_USERNAME }}
-      export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-      export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-      export API_URL=${{ secrets.API_URL }}
-
-      # Restart containers
-      docker-compose down
-      docker-compose up -d --remove-orphans
-```
+            # Restart containers
+            docker-compose down
+            docker-compose up -d --remove-orphans
