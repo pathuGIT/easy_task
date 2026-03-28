@@ -1,7 +1,6 @@
 package com.easytask.backend.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,9 +20,6 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecureConfig {
-
-    @Value("${API_URL}")
-    private String api_url;
     
     @Autowired
     private JwtFilter jwtFilter;
@@ -53,7 +49,7 @@ public class SecureConfig {
     @Bean
     protected CorsConfigurationSource configurationSource() { // global CORS configuration
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(api_url); // allow access to frontend
+        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // allow access to frontend
         configuration.setAllowedMethods(List.of("POST", "GET", "DELETE", "PUT", "OPTIONS")); // allow this ACTION
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
 
