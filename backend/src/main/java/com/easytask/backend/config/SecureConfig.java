@@ -53,7 +53,7 @@ public class SecureConfig {
     @Bean
     protected CorsConfigurationSource configurationSource() { // global CORS configuration
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(api_url)); // allow access to frontend
+        configuration.setAllowedOrigins(api_url); // allow access to frontend
         configuration.setAllowedMethods(List.of("POST", "GET", "DELETE", "PUT", "OPTIONS")); // allow this ACTION
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
 
