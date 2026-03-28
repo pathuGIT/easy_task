@@ -66,7 +66,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            set -e
+            set -euo pipefail
             mkdir -p ~/app
             cd ~/app
 
@@ -79,12 +79,25 @@ jobs:
             API_URL=${{ secrets.API_URL }}
             EOF
 
-            docker pull ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
-            docker pull ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+            # Pick docker command (use sudo if needed)
+            if docker info >/dev/null 2>&1; then
+              DOCKER="docker"
+            else
+              DOCKER="sudo docker"
+            fi
 
-            # optional: force compose to use SHA tag (see note below)
+            # Pick compose command (plugin vs legacy binary)
+            if $DOCKER compose version >/dev/null 2>&1; then
+              COMPOSE="$DOCKER compose"
+            else
+              COMPOSE="docker-compose"
+            fi
+
+            $DOCKER pull ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+            $DOCKER pull ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+
             export BACKEND_TAG=${{ github.sha }}
             export FRONTEND_TAG=${{ github.sha }}
 
-            docker compose up -d --remove-orphans
-            docker image prune -f
+            $COMPOSE up -d --remove-orphans
+            $DOCKER image prune -f
