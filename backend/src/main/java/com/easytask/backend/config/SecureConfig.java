@@ -52,7 +52,7 @@ public class SecureConfig {
     
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:4200",
-                "http://3.233.222.34:4200"
+                "http://3.233.222.34.nip.io"
         ));
     
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
