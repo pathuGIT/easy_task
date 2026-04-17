@@ -47,12 +47,17 @@ public class SecureConfig {
     }
 
     @Bean
-    protected CorsConfigurationSource configurationSource() { // global CORS configuration
+    protected CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200")); // allow access to frontend
-        configuration.setAllowedMethods(List.of("POST", "GET", "DELETE", "PUT", "OPTIONS")); // allow this ACTION
+    
+        configuration.setAllowedOrigins(List.of(
+                "https://3.233.222.34.nip.io"
+        ));
+    
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
-
+        configuration.setAllowCredentials(true); // good if you use Authorization header / cookies
+    
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

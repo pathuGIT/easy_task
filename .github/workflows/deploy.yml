@@ -1,0 +1,104 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [beta]
+
+env:
+  BACKEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-backend
+  FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/easy-task-frontend
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Build + push backend
+      - name: Build & push backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+            ${{ env.BACKEND_IMAGE }}:latest
+          cache-from: type=gha,scope=backend-beta
+          cache-to: type=gha,mode=max,scope=backend-beta
+
+      # Build + push frontend
+      - name: Build & push frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: true
+          tags: |
+            ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+            ${{ env.FRONTEND_IMAGE }}:latest
+          cache-from: type=gha,scope=frontend-beta
+          cache-to: type=gha,mode=max,scope=frontend-beta
+
+      # Copy docker-compose.yml to EC2 (so EC2 always has it)
+      - name: Upload docker-compose.yml to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "~/app"
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            mkdir -p ~/app
+            cd ~/app
+
+            # write .env that docker compose will read
+            cat > .env << 'EOF'
+            DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+            DB_HOST=${{ secrets.DB_HOST }}
+            DB_USERNAME=${{ secrets.DB_USERNAME }}
+            DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            API_URL=${{ secrets.API_URL }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            EOF
+
+            # Pick docker command (use sudo if needed)
+            if docker info >/dev/null 2>&1; then
+              DOCKER="docker"
+            else
+              DOCKER="sudo docker"
+            fi
+
+            # Pick compose command (plugin vs legacy binary)
+            if $DOCKER compose version >/dev/null 2>&1; then
+              COMPOSE="$DOCKER compose"
+            else
+              COMPOSE="docker-compose"
+            fi
+
+            $DOCKER pull ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
+            $DOCKER pull ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
+
+            export BACKEND_TAG=${{ github.sha }}
+            export FRONTEND_TAG=${{ github.sha }}
+
+            $COMPOSE up -d --remove-orphans
+            $DOCKER image prune -f
