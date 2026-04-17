@@ -9,6 +9,7 @@ import io.jsonwebtoken.security.InvalidKeyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.security.Keys;
 import javax.crypto.SecretKey;
@@ -40,7 +41,8 @@ public class JwtService {
 
     public String generateActiveToken(String username){ // Generate Active Token for 2 minutes
         try {
-            Users users = userRepository.findByUsername(username);
+            Users users = userRepository.findByUsername(username)
+                    .orElseThrow(()->new UsernameNotFoundException("User Not Found."));
             return Jwts.builder()
                     .subject(username)
                     .issuedAt(new Date(System.currentTimeMillis()))
@@ -55,7 +57,8 @@ public class JwtService {
 
     public String generateRefreshToken(String username){ // Generate Refresh token for 2 hours
         try {
-            Users users = userRepository.findByUsername(username);
+            Users users = userRepository.findByUsername(username)
+                    .orElseThrow(()->new UsernameNotFoundException("User Not Found."));
             return Jwts.builder()
                     .subject(username)
                     .issuedAt(new Date(System.currentTimeMillis()))

@@ -6,6 +6,7 @@ import com.easytask.backend.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,11 +18,11 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    // Get all tasks
+    // Get all tasks for a project
     @GetMapping("/all")
-    public ResponseEntity<ApiResponse<List<Task>>> allTask() {
+    public ResponseEntity<ApiResponse<List<Task>>> allTask(@RequestParam long projectId) {
         try {
-            List<Task> list = taskService.getAll();
+            List<Task> list = taskService.getAll(projectId);
             return ResponseEntity.ok(new ApiResponse<>("Get all tasks success.", list));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
@@ -29,21 +30,23 @@ public class TaskController {
     }
 
     // Get a task by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Task>> getTaskById(@PathVariable Long id) {
+    @GetMapping("/{taskId}")
+    public ResponseEntity<ApiResponse<Task>> getTaskById(@PathVariable Long taskId, Authentication authentication) {
         try {
-            Task task = taskService.getTaskById(id);
+            Task task = taskService.getTaskById(taskId, authentication);
             return ResponseEntity.ok(new ApiResponse<>("Get task success.", task));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
+        } catch (RuntimeException d){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(d.getMessage(),null));
         }
     }
 
     // Create a new task
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse<Task>> createTask(@RequestBody Task task) {
+    @PostMapping("/create/{projectId}")
+    public ResponseEntity<ApiResponse<Task>> createTask(@PathVariable Long projectId, @RequestBody Task task, Authentication authentication) {
         try {
-            Task createdTask = taskService.createTask(task);
+            Task createdTask = taskService.createTask(projectId, task, authentication);
             return ResponseEntity.ok(new ApiResponse<>("Create task success.", createdTask));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
@@ -54,23 +57,27 @@ public class TaskController {
 
     // Update an existing task
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Task>> updateTask(@PathVariable Long id, @RequestBody Task task) {
+    public ResponseEntity<ApiResponse<Task>> updateTask(@PathVariable Long id, @RequestBody Task task, Authentication authentication) {
         try {
-            Task updatedTask = taskService.updateTask(id, task);
+            Task updatedTask = taskService.updateTask(id, task, authentication);
             return ResponseEntity.ok(new ApiResponse<>("Update task success.", updatedTask));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
+        } catch (RuntimeException d){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(d.getMessage(),null));
         }
     }
 
     // Delete a task
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<String>> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<String>> deleteTask(@PathVariable Long id, Authentication authentication) {
         try {
-            taskService.deleteTask(id);
+            taskService.deleteTask(id, authentication);
             return ResponseEntity.ok(new ApiResponse<>("Delete task success.", "Deleted task id: " + id));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(e.getMessage(),null));
+        } catch (RuntimeException d){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(d.getMessage(),null));
         }
     }
 }

@@ -62,15 +62,13 @@ public class UserService {
         String refreshToken = jwtService.generateRefreshToken(userDetails.getUsername());
 
         if (refreshToken != null) {
-            Users users = userRepository.findByUsername(userDetails.getUsername());
 
-            if (users == null) {
-                throw new UsernameNotFoundException("User not found with : " + userDetails.getUsername());
-            }
+            Users user = userRepository.findByUsername(authentication.getName())
+                    .orElseThrow(()->new UsernameNotFoundException("User Not Found."));
 
             // save refresh token
-            Users saveUser = userRepository.findById(users.getId())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + users.getId()));
+            Users saveUser = userRepository.findById(user.getId())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + user.getId()));
 
             saveUser.setRefresh_token(refreshToken);
             userRepository.save(saveUser);
@@ -100,7 +98,9 @@ public class UserService {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalArgumentException("User not authenticated");
         }
-        Users user = userRepository.findByUsername(authentication.getName());
+
+        Users user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(()->new UsernameNotFoundException("User Not Found."));
 
         user.setRefresh_token(null);
         userRepository.save(user);
@@ -113,7 +113,9 @@ public class UserService {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalArgumentException("User not authenticated");
         }
-        Users user = userRepository.findByUsername(authentication.getName());
+
+        Users user = userRepository.findByUsername(authentication.getName())
+                .orElseThrow(()->new UsernameNotFoundException("User Not Found."));
 
         return user;
     }
