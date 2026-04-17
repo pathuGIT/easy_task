@@ -1,5 +1,6 @@
 package com.easytask.backend.models;
 
+import com.easytask.backend.enums.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -10,27 +11,27 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = false)
     private String title;
     private String description;
-    private String status;
+    private TaskStatus status;
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "project_id", referencedColumnName = "project_id")
     @JsonIgnore
-    private Users users;
+    private Project project;
 
     public Task() {
     }
 
-    public Task(Long id, String title, String description, String status, LocalDateTime createdAt, Users cart) {
+    public Task(Long id, String title, String description, TaskStatus status, LocalDateTime createdAt, Project project) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
         this.createdAt = createdAt;
-        this.users = cart;
+        this.project = project;
     }
 
     public Long getId() {
@@ -57,11 +58,11 @@ public class Task {
         this.description = description;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 
@@ -73,11 +74,11 @@ public class Task {
         this.createdAt = createdAt;
     }
 
-    public Users getUsers() {
-        return users;
+    public Project getProject() {
+        return project;
     }
 
-    public void setUsers(Users cart) {
-        this.users = cart;
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

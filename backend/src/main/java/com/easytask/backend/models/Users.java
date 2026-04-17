@@ -15,17 +15,17 @@ public class Users {
     private String password;
 
     @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Task> tasks;
+    private List<Project> projects;
     private String refresh_token;
 
     public Users() {
     }
 
-    public Users(Long id, String username, String password, List<Task> tasks, String refresh_token) {
+    public Users(Long id, String username, String password, List<Project> projects, String refresh_token) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.tasks = tasks;
+        this.projects = projects;
         this.refresh_token = refresh_token;
     }
 
@@ -53,12 +53,12 @@ public class Users {
         this.password = password;
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    public List<Project> getProjects() {
+        return projects;
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setProjects(List<Project> projects) {
+        this.projects = projects;
     }
 
     public String getRefresh_token() {
