@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProjectService {
     @Autowired
@@ -23,5 +25,17 @@ public class ProjectService {
         project.setUsers(user);
         projectRepository.save(project);
         return new ApiResponse<>("Project Created Successfully.", true);
+    }
+
+
+    public ApiResponse getAll(Authentication authentication) {
+        Users user = userRepository.findByUsername(authentication.getName())
+                        .orElseThrow(()->new UsernameNotFoundException("User Not Found."));
+        List<Project> all = projectRepository.findAllByUsers(user);
+
+        if(all.isEmpty())
+            return new ApiResponse<>("Empty project list", true);
+        else
+            return new ApiResponse<>("Successfully loaded all projects.", all);
     }
 }
