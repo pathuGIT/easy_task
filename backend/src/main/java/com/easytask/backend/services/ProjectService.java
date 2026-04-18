@@ -1,6 +1,7 @@
 package com.easytask.backend.services;
 
 import com.easytask.backend.dto.ApiResponse;
+import com.easytask.backend.enums.ProjectStatus;
 import com.easytask.backend.models.Project;
 import com.easytask.backend.models.Users;
 import com.easytask.backend.repositories.ProjectRepository;
@@ -23,6 +24,7 @@ public class ProjectService {
         Users user = userRepository.findByUsername(authentication.getName())
                 .orElseThrow(()->new UsernameNotFoundException("User Not Found."));
         project.setUsers(user);
+        project.setProStatus(ProjectStatus.PLANNED);
         projectRepository.save(project);
         return new ApiResponse<>("Project Created Successfully.", true);
     }

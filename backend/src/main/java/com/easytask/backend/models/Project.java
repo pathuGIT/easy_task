@@ -19,7 +19,6 @@ public class Project {
     @Column(unique = true)
     private String title;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "project_status")
     private ProjectStatus proStatus;

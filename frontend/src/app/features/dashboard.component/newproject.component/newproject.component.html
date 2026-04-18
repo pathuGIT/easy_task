@@ -1,0 +1,16 @@
+<div class="flex justify-center items-center h-full">
+    <div class="w-full max-w-md border rounded p-4 shadow-sm flex flex-col gap-3">
+
+        <h2 class="text-lg font-semibold">Create New Project</h2>
+
+        <!-- Input -->
+        <input type="text" [(ngModel)]="projectTitle" placeholder="Enter project title"
+            class="border rounded px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500" />
+
+        <!-- Button -->
+        <button (click)="createProject()" class="bg-black text-white py-2 rounded hover:opacity-80 transition">
+            Create
+        </button>
+
+    </div>
+</div>

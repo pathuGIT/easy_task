@@ -1,14 +1,14 @@
-<nav class="flex justify-between items-center p-5 border bg-amber-50 rounded shadow-sm my-1 w-full ">
+<nav class="flex justify-between items-center p-3 border bg-amber-50 shadow-sm  w-full ">
     <span class="font-bold">Easy Task</span>
 
     <ul class="flex gap-4 list-none">
         @if(!isLoggin){
-            <li><a routerLink="/">Home</a></li>
-            <li><a routerLink="/login">Login</a></li>
+            <li><a routerLink="/" class="nav-link">Home</a></li>
+            <li><a routerLink="/login" class="nav-link">Login</a></li>
         }
         @if(isLoggin){
-            <li><a routerLink="/dashboard">Dashboard</a></li>
-            <li><a (click)="logout()" class="cursor-pointer">Logout</a></li>
+            <li><a routerLink="/dashboard" class="nav-link">Dashboard</a></li>
+            <li><a (click)="logout()" class="cursor-pointer" class="nav-link">Logout</a></li>
         }
     </ul>
 </nav>

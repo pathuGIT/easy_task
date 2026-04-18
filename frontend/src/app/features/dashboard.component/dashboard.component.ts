@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth-service';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-dashboard.component',
-  imports: [],
+  imports: [RouterLink],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit{

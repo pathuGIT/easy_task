@@ -7,6 +7,7 @@ import { DashboardComponent } from './features/dashboard.component/dashboard.com
 import { TaskComponent } from './features/task.component/task.component';
 import { NewtaskComponent } from './features/newtask.component/newtask.component';
 import { UpadtetaskComponent } from './features/upadtetask.component/upadtetask.component';
+import { NewprojectComponent } from './features/dashboard.component/newproject.component/newproject.component';
 
 export const routes: Routes = [
     {path:'', component: Home},
@@ -16,5 +17,6 @@ export const routes: Routes = [
     {path:'task', component:TaskComponent, canActivate: [AuthGuard]},
     {path:'newtask', component:NewtaskComponent, canActivate: [AuthGuard]},
     {path:'updatetask/:id', component:UpadtetaskComponent, canActivate: [AuthGuard]},
+    {path:'newProject', component:NewprojectComponent, canActivate: [AuthGuard]},
     {path: '**', redirectTo: '' }// fallback{}
 ];

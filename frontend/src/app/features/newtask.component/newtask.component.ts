@@ -16,7 +16,7 @@ export class NewtaskComponent {
 
   title: string = '';
   description: string = '';
-  status: string = 'TO_DO';
+  status: string = 'TODO';
   warning: string = '';
 
   createTask() {
